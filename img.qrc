@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Qt_Images/c++.png</file>
+        <file>Qt_Images/moon.jpg</file>
+        <file>Qt_Images/over.jpg</file>
+        <file>Qt_Images/p0.png</file>
+        <file>Qt_Images/p1.gif</file>
+        <file>Qt_Images/p2.png</file>
+        <file>Qt_Images/wall.jpg</file>
+        <file>Qt_Images/white.png</file>
+        <file>Qt_Images/xiaoren.png</file>
+        <file>Qt_Images/luck.jpg</file>
+    </qresource>
+</RCC>
