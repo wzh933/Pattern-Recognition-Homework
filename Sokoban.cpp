@@ -68,7 +68,8 @@ void Sokoban::drawMap(QPainter *pDraw)
 
 void Sokoban::keyDown(QKeyEvent *event)
 {
-
+    
+        prestep=1;
         int i = getRow();
         int j = getCol();
         switch (event->key())
@@ -89,9 +90,11 @@ void Sokoban::keyDown(QKeyEvent *event)
                     mp[i - 2][j] += 4;
                 }
             }
+            
             break;
         case Qt::Key_S:
         case Qt::Key_Down:
+            prestep=2;
             if (mp[i + 1][j] == 0 || mp[i + 1][j] == 3)
             {
                 mp[i][j] -= 5;
@@ -106,9 +109,11 @@ void Sokoban::keyDown(QKeyEvent *event)
                     mp[i + 2][j] += 4;
                 }
             }
+            
             break;
         case Qt::Key_A:
         case Qt::Key_Left:
+            prestep=3;
             if (mp[i][j - 1] == 0 || mp[i][j - 1] == 3)
             {
                 mp[i][j] -= 5;
@@ -126,6 +131,7 @@ void Sokoban::keyDown(QKeyEvent *event)
             break;
         case Qt::Key_D:
         case Qt::Key_Right:
+            prestep=4;
             if (mp[i][j + 1] == 0 || mp[i][j + 1] == 3)
             {
                 mp[i][j] -= 5;
@@ -173,6 +179,16 @@ int Sokoban::getCol()
         return -1;
 }
 
+void Sokoban::setLevel(int l)
+{
+    level=l;
+}
+
+void Sokoban::setStep(int s)
+{
+    step=s;
+}
+
 bool Sokoban::gameOver()
 {
     for (int i = 0; i < 8; i++)
@@ -184,10 +200,80 @@ bool Sokoban::gameOver()
     return true;
 }
 
+void Sokoban::preStep() 
+{
+    int i = getRow();
+    int j = getCol();
+     switch(prestep)
+     {
+     //前一步为上
+         case 1:
+
+         {
+             if (mp[i - 1][j] == 4|| mp[i - 1][j] == 7)
+
+      {
+                     mp[i][j] -= 1;     //人走了
+                     mp[i - 1][j] -= 4; //人来了，下个地方综合起来加1
+                     mp[i + 1][j] += 5;
+             }
+
+
+         else
+         {
+         mp[i][j] -= 5;     //人走了
+         mp[i + 1][j] += 5; //人来了
+         }
+            
+         
+            break;
+         case 2:
+                 if (mp[i+ 1][j] == 4 || mp[i +1][j] == 7)
+                 {    mp[i][j] -= 1;     //人走了
+                     mp[i - 1][j] += 5; //人来了，下个地方综合起来加1
+                     mp[i + 1][j] -= 4;
+                 }
+
+
+                     else{
+                     mp[i][j] -= 5;     //人走了
+                     mp[i - 1][j] += 5; //人来了
+                 }
 
 
 
+         
+           break;
+         case 3:
+                 if (mp[i][j - 1] == 4 || mp[i][j - 1] == 7)
+                 { mp[i][j] -= 1;     //人走了
+                     mp[i][j-1] -= 4; //人来了，下个地方综合起来加1
+                     mp[i][j+1] += 5;
+
+}
+                else{
+                     mp[i][j] -= 5;     //人走了
+                     mp[i][j+1] += 5; //人来了
+                     }
+
+     
+           break;
+         case 4:
+                 if (mp[i][j + 1] == 4 || mp[i][j + 1] == 7)
+                 {mp[i][j] -= 1;     //人走了
+                     mp[i][j-1] += 5; //人来了，下个地方综合起来加1
+                     mp[i][j+1] -= 4;
+
+}
+                 else{
+                 mp[i][j] -= 5;     //人走了
+                 mp[i][j-1] += 5; //人来了
+                     }
+
+     
+            break;
+}
 
 
-
+}}
 

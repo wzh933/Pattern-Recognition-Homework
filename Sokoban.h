@@ -1,14 +1,18 @@
 #ifndef BOXCIRNO_H
 #define BOXCIRNO_H
 #
-#include<QPainter>
-#include<QEvent>
-#include<QKeyEvent>
+#include <QPainter>
+#include <QEvent>
+#include <QKeyEvent>
 #include <QString>
 #include <QImage>
 #include <QRect>
 class Sokoban
 {
+private:
+    int level;
+    int step;
+    int prestep;
 public:
     Sokoban();
     void initMap();
@@ -16,7 +20,14 @@ public:
     void keyDown(QKeyEvent *event);
     int getRow();
     int getCol();
+    void setLevel(int l);
+    void setStep(int s);
     bool gameOver();
+    void remake();//重开
+    void preStep();//上一步
+    void preLev();//上一关
+    void nextLev();//下一关
+
 protected:
     int mp[8][8]=
     {
