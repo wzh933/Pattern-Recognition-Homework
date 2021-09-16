@@ -18,8 +18,12 @@ MainWindow::MainWindow(QWidget *parent) :
     menu=menuBar()->addMenu(tr("选项"));
     QAction *action=menu->addAction(tr("读取外部关卡"));
     menu->addSeparator();
+    QAction *action4=menu->addAction(tr("上一步"));
+    connect(action4,SIGNAL(triggered()),this,SLOT(onGoBackBtnClicked()));
+    menu->addSeparator();
+
     QAction *action2=menu->addAction(tr("重新开始"));
-    connect(action2,SIGNAL(triggered()),this,SLOT(onGoBackBtnClicked()));
+    connect(action2,SIGNAL(triggered()),this,SLOT(onRestartBtnClicked()));
     menu->addSeparator();
     QAction *action3=menu->addAction(tr("上一关"));
     connect(action3,SIGNAL(triggered()),this,SLOT(onPreBtnClicked()));
@@ -55,4 +59,8 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 void MainWindow::onGoBackBtnClicked()
 {
     pBox->preStep();
+}
+void MainWindow::onRestartBtnClicked()
+{
+    pBox->remake();
 }
