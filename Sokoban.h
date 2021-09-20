@@ -10,12 +10,27 @@
 class Sokoban
 {
 private:
-    int level;
+    int level=1;
     int step;
     int prestep;
 public:
     Sokoban();
     void initMap();
+    void initMap1();
+    void initMap2();
+    void initMap3();
+    void initMap4();
+    void initMap5();
+    void initMap6();
+    void initMap7();
+    void initMap8();
+    void initMap9();
+    void initMap10();
+    void initMap11();
+//    void initMap();
+//    void initMap();
+//    void initMap();
+//    void initMap();
     void drawMap(QPainter *pDraw);
     void keyDown(QKeyEvent *event);
     int getRow();

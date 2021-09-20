@@ -64,3 +64,13 @@ void MainWindow::onRestartBtnClicked()
 {
     pBox->remake();
 }
+
+void MainWindow::onPreBtnClicked()
+{
+    pBox->preLev();
+}
+
+void MainWindow::onNextBtnClicked()
+{
+    pBox->nextLev();
+}

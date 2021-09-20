@@ -58,9 +58,9 @@ private:
     QMutex mutex;
 
 private slots:
-//    void onNextBtnClicked();//下一关
+    void onNextBtnClicked();//下一关
     void onRestartBtnClicked();//重新开始
-//    void onPreBtnClicked();//前一关
+    void onPreBtnClicked();//前一关
     void onGoBackBtnClicked();//回退
 //    void onActionClicked();
 //    void showHelpInformation();
