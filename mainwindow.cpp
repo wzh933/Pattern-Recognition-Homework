@@ -74,3 +74,9 @@ void MainWindow::onNextBtnClicked()
 {
     pBox->nextLev();
 }
+
+QMediaPlayer *startSound;  //创建一个音乐播放器
+//connect(startSound,SIGNAL(positionChanged(qint64)),this,SLOT(postitionChanged(qint64)));
+startSound->setMedia(QUrl::fromLocalFile("C:\\Users\\Kyyyyy\\Desktop\\Sokoban\\Emotional Piano.mp3");
+startSound->setVolume(80);  //音量
+startSound->play();

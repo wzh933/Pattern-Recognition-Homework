@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <Sokoban.h>
 
+#include <QMediaPlayer>
 #include <QLabel>
 #include <QTextEdit>
 #include <QPushButton>
@@ -23,6 +24,9 @@
 #include <QThread>
 #include <QMutex>
 #include <QMutexLocker>
+
+
+
 
 
 namespace Ui {
