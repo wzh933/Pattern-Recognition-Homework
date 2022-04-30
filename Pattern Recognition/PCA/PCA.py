@@ -38,5 +38,3 @@ class PCA:
             lower_x = np.matmul(dimension_reduction_mat, x)
             lower_xs.append(lower_x)
         self.lower_sample = lower_xs
-
-        # self.lower_sample = [np.matrix(eigen_feature_list[i][1]).transpose() for i in range(lower_dimension)]
