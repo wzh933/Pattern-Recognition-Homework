@@ -1,3 +1,5 @@
+import numpy as np
+
 from Read_mat_file.ReadMatFile import *
 
 
@@ -24,4 +26,17 @@ class PCA:
         for i in range(len(eigen_value)):
             eigen_feature_list.append((eigen_value[i], feature_vectors[i]))
         eigen_feature_list = sorted(eigen_feature_list, key=lambda tuple: tuple[0], reverse=True)
-        self.lower_sample = [np.matrix(eigen_feature_list[i][1]).transpose() for i in range(lower_dimension)]
+
+        # step5：合并前lower_dimension个特征向量得到降维变换矩阵(dimension_reduction_mat)lower_dimension*orig_dimension
+        dimension_reduction_mat = eigen_feature_list[0][1]
+        for i in range(1, lower_dimension):
+            dimension_reduction_mat = np.vstack((dimension_reduction_mat, eigen_feature_list[i][1]))
+
+        # step6：进行降维变换
+        lower_xs = []
+        for x in xs:
+            lower_x = np.matmul(dimension_reduction_mat, x)
+            lower_xs.append(lower_x)
+        self.lower_sample = lower_xs
+
+        # self.lower_sample = [np.matrix(eigen_feature_list[i][1]).transpose() for i in range(lower_dimension)]
