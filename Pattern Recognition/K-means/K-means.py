@@ -5,6 +5,7 @@ from scipy.spatial.distance import cdist
 import os
 import shutil
 import random
+from Read_mat_file.ReadMatFile import *
 
 
 class K_means:
@@ -97,24 +98,7 @@ class K_means:
                 new_Img.save(path + 'Image' + str(label) + '/' + 'Image' + str(cnt) + '.bmp')
 
 
-# 读取出向量
-def read_mat_file(file_path):
-    result_data = []
-    mat_data = scio.loadmat(file_path)['DAT']
-    row = len(mat_data[0])
-    col = len(mat_data[0][0])
-    for r in range(row):
-        for c in range(col):
-            x = []
-            for data in mat_data:
-                x.append(data[r][c])
-            x = np.matrix(x).transpose()
-            result_data.append(x)
-    return result_data
-
-
-# 输入样本
-s = read_mat_file('Yale_15_11_100_80.mat')
+s = ReadMatFile('Yale_15_11_100_80.mat')  # 读取输入样本
 km = K_means(sample=s, k=15, iterate_nums=1000)  # 欧式距离
 # km = K_means(sample=s, k=15, iterate_nums=1000, metric='mahalanobis', res_file_path='Mahalanobis_Res_Image')  # 马氏距离
 # km = K_means(sample=s, k=15, iterate_nums=1000, metric='L1', res_file_path='L1_Res_Image')  # 曼哈顿距离
