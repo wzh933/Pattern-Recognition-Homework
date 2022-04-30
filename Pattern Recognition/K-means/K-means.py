@@ -1,3 +1,4 @@
+from Read_mat_file.ReadMatFile import *
 import scipy.io as scio
 import numpy as np
 from PIL import Image
@@ -5,7 +6,6 @@ from scipy.spatial.distance import cdist
 import os
 import shutil
 import random
-from Read_mat_file.ReadMatFile import *
 
 
 class K_means:
@@ -16,14 +16,15 @@ class K_means:
         return np.linalg.norm(x1 - x2)
 
     # 马氏距离
-    def mahalanobis_distance(self, x1, x2):
+    @staticmethod
+    def mahalanobis_distance(sigma_1, x1, x2):
         # X = sample[0]  # 将样本中所有向量横向拼接
         # for i in range(1, len(sample)):
         #     X = np.hstack((X, sample[i]))
         # sigma = np.cov(X)  # sigma是协方差矩阵
         # sigma_1 = np.linalg.inv(sigma)  # 对协方差矩阵求逆
         delta = x1 - x2
-        dis = np.matmul(np.matmul(delta.transpose(), self.sigma_1), delta)
+        dis = np.matmul(np.matmul(delta.transpose(), sigma_1), delta)
         # return np.sqrt(dis[0, 0])
         return dis[0, 0]
 
@@ -43,12 +44,13 @@ class K_means:
 
     def __init__(self, sample, k, iterate_nums, metric='euclidean', res_file_path='Euclidean_Res_Image'):
         xs = sample  # xs是样本集
+        sigma_1 = 0
         if metric == 'mahalanobis':  # 只有在求马氏距离时才会需要进行协方差矩阵的计算
             X = xs[0]  # 将样本中所有向量横向拼接
             for i in range(1, len(xs)):
                 X = np.hstack((X, xs[i]))
             sigma = np.cov(X)  # sigma是协方差矩阵
-            self.sigma_1 = np.linalg.inv(sigma)  # 对协方差矩阵求逆
+            sigma_1 = np.linalg.inv(sigma)  # 对协方差矩阵求逆
         # 清除先前生成结果
         if os.path.exists(res_file_path):
             shutil.rmtree(res_file_path)
@@ -79,7 +81,7 @@ class K_means:
                     if metric == 'euclidean':  # 欧氏距离
                         dis_list.append(self.euclidean_distance(x, x_mean))
                     elif metric == 'mahalanobis':  # 马氏距离
-                        dis_list.append(self.mahalanobis_distance(x, x_mean))
+                        dis_list.append(self.mahalanobis_distance(sigma_1, x, x_mean))
                     elif metric == 'L1':  # 曼哈顿距离
                         dis_list.append(self.L1_distance(x, x_mean))
                 # print('end')
@@ -98,8 +100,8 @@ class K_means:
                 new_Img.save(path + 'Image' + str(label) + '/' + 'Image' + str(cnt) + '.bmp')
 
 
-s = ReadMatFile('Yale_15_11_100_80.mat')  # 读取输入样本
-km = K_means(sample=s, k=15, iterate_nums=1000)  # 欧式距离
+s = ReadMatFile('Yale_15_11_100_80.mat').sample  # 读取输入样本
+km = K_means(sample=s, k=15, iterate_nums=2000)  # 欧式距离
 # km = K_means(sample=s, k=15, iterate_nums=1000, metric='mahalanobis', res_file_path='Mahalanobis_Res_Image')  # 马氏距离
 # km = K_means(sample=s, k=15, iterate_nums=1000, metric='L1', res_file_path='L1_Res_Image')  # 曼哈顿距离
 
