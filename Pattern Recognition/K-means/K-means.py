@@ -6,6 +6,8 @@ from scipy.spatial.distance import cdist
 import os
 import shutil
 import random
+from tqdm import trange
+import time
 
 
 class K_means:
@@ -13,6 +15,7 @@ class K_means:
     # 欧式距离
     @staticmethod
     def euclidean_distance(x1, x2):
+        # 二范数即欧式距离
         return np.linalg.norm(x1 - x2)
 
     # 马氏距离
@@ -25,15 +28,16 @@ class K_means:
         # sigma_1 = np.linalg.inv(sigma)  # 对协方差矩阵求逆
         delta = x1 - x2
         dis = np.matmul(np.matmul(delta.transpose(), sigma_1), delta)
+        # if dis < 0:
+        #     print(dis)
         # return np.sqrt(dis[0, 0])
-        return dis[0, 0]
+        return np.abs(dis[0, 0])
 
     # 曼哈顿距离
     @staticmethod
     def L1_distance(x1, x2):
-        # return sum(abs(x1 - x2))[0, 0]
-
-        return sum(map(lambda i, j: abs(i - j), x1, x2))[0, 0]
+        # 一范数即曼哈顿距离
+        return np.linalg.norm(x1 - x2, 1)
 
     # mat文件转换为bmp位图
     @staticmethod
@@ -67,9 +71,10 @@ class K_means:
         k_closures = [[] for i in range(k)]
 
         # step3：迭代求解
-        for tot in range(iterate_nums):
-            if (tot + 1) % 100 == 0:
-                print("这是第" + str(tot + 1) + "次迭代")
+        for tot in trange(iterate_nums):
+            time.sleep(0.5)
+            # if (tot + 1) % 100 == 0:
+            #     print("这是第" + str(tot + 1) + "次迭代")
             # print("这是第" + str(tot + 1) + "次迭代")
             # step3-1：对所有样本点进行分类
             for i in range(k):  # 要挨个清空之前的聚类结果
@@ -101,10 +106,9 @@ class K_means:
 
 
 s = ReadMatFile('Yale_15_11_100_80.mat').sample  # 读取输入样本
-km = K_means(sample=s, k=15, iterate_nums=2000)  # 欧式距离
+# km = K_means(sample=s, k=15, iterate_nums=2000)  # 欧式距离
 # km = K_means(sample=s, k=15, iterate_nums=1000, metric='mahalanobis', res_file_path='Mahalanobis_Res_Image')  # 马氏距离
 # km = K_means(sample=s, k=15, iterate_nums=1000, metric='L1', res_file_path='L1_Res_Image')  # 曼哈顿距离
-
 
 # ----------------------------这是显示原始数据集的代码-------------------------------------------#
 # def Mat2Img(mat_data):
