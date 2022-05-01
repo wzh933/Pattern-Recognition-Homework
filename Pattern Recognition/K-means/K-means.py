@@ -50,7 +50,7 @@ class K_means:
         xs = sample  # xs是样本集
         sigma_1 = 0
         if metric == 'mahalanobis':  # 只有在求马氏距离时才会需要进行协方差矩阵的计算
-            X = xs[0]  # 将样本中所有向量横向拼接
+            X = xs[0]  # 将样本中所有向量纵向拼接
             for i in range(1, len(xs)):
                 X = np.hstack((X, xs[i]))
             sigma = np.cov(X)  # sigma是协方差矩阵
