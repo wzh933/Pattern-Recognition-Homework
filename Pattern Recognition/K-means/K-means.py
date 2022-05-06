@@ -8,6 +8,7 @@ import shutil
 import random
 from tqdm import trange
 import time
+from PCA import *
 
 
 class K_means:
@@ -39,14 +40,7 @@ class K_means:
         # 一范数即曼哈顿距离
         return np.linalg.norm(x1 - x2, 1)
 
-    # mat文件转换为bmp位图
-    @staticmethod
-    def Mat2Img(mat_data):
-        mat_data = mat_data * 255
-        new_img = Image.fromarray(mat_data.astype(np.uint8))
-        return new_img
-
-    def __init__(self, sample, k, iterate_nums, metric='euclidean', res_file_path='Euclidean_Res_Image'):
+    def __init__(self, sample, k, iterate_nums, metric='euclidean'):
         xs = sample  # xs是样本集
         sigma_1 = 0
         if metric == 'mahalanobis':  # 只有在求马氏距离时才会需要进行协方差矩阵的计算
@@ -55,31 +49,26 @@ class K_means:
                 X = np.hstack((X, xs[i]))
             sigma = np.cov(X)  # sigma是协方差矩阵
             sigma_1 = np.linalg.inv(sigma)  # 对协方差矩阵求逆
-        # 清除先前生成结果
-        if os.path.exists(res_file_path):
-            shutil.rmtree(res_file_path)
-        os.mkdir(res_file_path)
-        # 创建k个文件目录以存放后续结果
-        path = res_file_path + '/'
-        for i in range(k):
-            os.mkdir(path + 'Image' + str(i))
 
         # step1：随机选取k个样本作为初始样本中心点
         orig_means = random.sample(sample, k)
 
         # step2：创建k个类别簇
-        k_closures = [[] for i in range(k)]
+        k_clusters = [[] for i in range(k)]
+        k_index_clusters = [[] for i in range(k)]
 
         # step3：迭代求解
         for tot in trange(iterate_nums):
-            # time.sleep(0.5)
+            # time.sleep(0.05)
             # if (tot + 1) % 100 == 0:
             #     print("这是第" + str(tot + 1) + "次迭代")
             # print("这是第" + str(tot + 1) + "次迭代")
             # step3-1：对所有样本点进行分类
             for i in range(k):  # 要挨个清空之前的聚类结果
-                k_closures[i].clear()
-            for x in xs:
+                k_clusters[i].clear()
+                k_index_clusters[i].clear()
+            for i in range(len(xs)):
+                x = xs[i]
                 dis_list = []  # 创建距离列表，里面装的是x与k个样本中心点的距离
                 # print('start')
                 for x_mean in orig_means:
@@ -91,24 +80,51 @@ class K_means:
                         dis_list.append(self.L1_distance(x, x_mean))
                 # print('end')
                 label = np.argmin(dis_list)  # 选择与x距离最近的类别为x的类别
-                k_closures[label].append(x)  # 将x加入label类簇中
+                k_clusters[label].append(x)  # 将x加入label类簇中
+                k_index_clusters[label].append(i)  # 将x的下标加入label类簇中
             # step3-2：重新计算各类簇中心点
             for label in range(k):
-                orig_means[label] = sum(k_closures[label]) / len(k_closures[label])
+                orig_means[label] = sum(k_clusters[label]) / len(k_clusters[label])
 
         # step4：记录聚类结果
-        for label in range(len(k_closures)):
-            for cnt in range(len(k_closures[label])):
-                Img_vector = k_closures[label][cnt]
-                Img_mat = np.reshape(Img_vector, [80, 100])
-                new_Img = self.Mat2Img(Img_mat)
-                new_Img.save(path + 'Image' + str(label) + '/' + 'Image' + str(cnt) + '.bmp')
+        self.result = k_index_clusters
+        # for label in range(len(k_closures)):
+        #     for cnt in range(len(k_closures[label])):
+        #         Img_vector = k_closures[label][cnt]
+        #         Img_mat = np.reshape(Img_vector, [80, 100])
+        #         new_Img = self.Mat2Img(Img_mat)
+        #         new_Img.save(path + 'Image' + str(label) + '/' + 'Image' + str(cnt) + '.bmp')
 
 
-s = ReadMatFile('Yale_15_11_100_80.mat').sample  # 读取输入样本
-# km = K_means(sample=s, k=15, iterate_nums=2000)  # 欧式距离
-# km = K_means(sample=s, k=15, iterate_nums=1000, metric='mahalanobis', res_file_path='Mahalanobis_Res_Image')  # 马氏距离
-# km = K_means(sample=s, k=15, iterate_nums=1000, metric='L1', res_file_path='L1_Res_Image')  # 曼哈顿距离
+# mat文件转换为bmp位图
+def Mat2Img(mat_data):
+    mat_data = mat_data * 255
+    new_img = Image.fromarray(mat_data.astype(np.uint8))
+    return new_img
+
+
+k = 15
+
+orig_s = ReadMatFile('Yale_15_11_100_80.mat').sample  # 读取输入样本
+pca_s = PCA(sample=orig_s, lower_dimension=200).lower_sample  # 做PCA进行降维
+km = K_means(sample=pca_s, k=k, iterate_nums=1000).result  # 欧式距离
+# km = K_means(sample=pca_s, k=15, iterate_nums=1000, metric='mahalanobis').result  # 马氏距离
+# km = K_means(sample=pca_s, k=15, iterate_nums=1000, metric='L1').result  # 曼哈顿距离
+res_file_path = 'L1_Res_Image/'
+# 清除先前生成结果
+if os.path.exists(res_file_path):
+    shutil.rmtree(res_file_path)
+os.mkdir(res_file_path)
+# 创建k个文件目录以存放后续结果
+path = res_file_path + '/'
+for i in range(k):
+    os.mkdir(path + 'Image' + str(i))
+for label in range(len(km)):
+    for cnt in range(len(km[label])):
+        Img_vector = orig_s[km[label][cnt]]
+        Img_mat = np.reshape(Img_vector, [80, 100])
+        new_Img = Mat2Img(Img_mat)
+        new_Img.save(res_file_path + 'Image' + str(label) + '/' + 'Image' + str(cnt) + '.bmp')
 
 # ----------------------------这是显示原始数据集的代码-------------------------------------------#
 # def Mat2Img(mat_data):
