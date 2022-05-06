@@ -72,7 +72,7 @@ class K_means:
 
         # step3：迭代求解
         for tot in trange(iterate_nums):
-            time.sleep(0.5)
+            # time.sleep(0.5)
             # if (tot + 1) % 100 == 0:
             #     print("这是第" + str(tot + 1) + "次迭代")
             # print("这是第" + str(tot + 1) + "次迭代")
