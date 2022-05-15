@@ -22,7 +22,7 @@ scaler = StandardScaler()  # 均值方差标准化
 # 必须要洗牌打乱，不然在这个数据集里，训练集和测试集的label基本不相交
 kf = KFold(n_splits=5, shuffle=True)
 
-# 多层感知机（神经网络）对象，50隐层
+# 多层感知机（神经网络）对象，100隐层
 clf = MLPClassifier(solver='adam', alpha=1e-5, hidden_layer_sizes=(100,), random_state=1, max_iter=500)
 for train_index, test_index in kf.split(y):  # 划分数据集
     train_X, test_X = pca_X[train_index], pca_X[test_index]
