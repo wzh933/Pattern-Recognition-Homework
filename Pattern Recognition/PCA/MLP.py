@@ -15,7 +15,7 @@ y = faces.target  # 标签
 # -----------得到pca降维后的结果------------#
 # pca_X = PCA(sample=X, lower_dimension=200).data
 # np.save(file='pca_X.npy', arr=pca_X)
-# ---------------------------------------#
+# ----------------------------------------#
 pca_X = np.load('pca_X.npy')  # 降维后的数据
 scaler = StandardScaler()  # 均值方差标准化
 # 五折交叉检验
