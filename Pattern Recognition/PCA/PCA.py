@@ -6,13 +6,10 @@ from Read_mat_file.ReadMatFile import *
 class PCA:
 
     def __init__(self, sample, lower_dimension):
-        xs = sample
+        X = sample
 
         # step1：对样本去均值，进行中心化
         print("step1：对样本去均值，进行中心化")
-        X = xs[0]  # 将样本中所有向量竖向拼接
-        for i in range(1, len(xs)):
-            X = np.vstack((X, xs[i]))
         avg = np.mean(X, axis=0)
         X_adj = X - avg  # 去均值
 
@@ -33,27 +30,11 @@ class PCA:
 
         # step5：合并前lower_dimension个特征向量得到降维变换矩阵[dimension_reduction_mat]lower_dimension*orig_dimension
         print("step5：合并前lower_dimension个特征向量得到降维变换矩阵(dimension_reduction_mat)lower_dimension*orig_dimension")
-        dimension_reduction_mat = eigen_feature_list[0][1]
-        for i in range(1, lower_dimension):
-            dimension_reduction_mat = np.vstack((dimension_reduction_mat, eigen_feature_list[i][1]))
+        dimension_reduction_mat = np.array([eigen_feature_list[i][1] for i in range(lower_dimension)])
+        print(dimension_reduction_mat)
 
         # step6：进行降维变换
         print("step6：进行降维变换")
-        lower_xs = []
-        for x in xs:
-            lower_x = np.matmul(x, dimension_reduction_mat.transpose())
-            lower_xs.append(lower_x)
-        # self.lower_sample = lower_xs
-        lower_xs = np.array(lower_xs).astype(np.float)  # 避免出现复数
-        self.data = lower_xs
-        # self.data = []
-        # for lower_x in lower_xs:
-        #     x = []
-        #     for dim in lower_x:
-        #         x.append(dim)
-        #     self.data.append(np.array(x))
-        # self.data = np.array(self.data)
+        lower_X = np.matmul(X, dimension_reduction_mat.transpose()).astype(np.float)  # 避免出现复数
 
-# s = ReadMatFile('AR_120_14_50_45.mat').sample
-# pca = PCA(sample=s, lower_dimension=1000)
-# print(pca.lower_sample[0].shape)
+        self.data = lower_X
